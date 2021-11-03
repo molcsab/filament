@@ -11,6 +11,8 @@ class SelectFilter extends Filter
 
     protected array $options = [];
 
+    protected $isSearchable = false;
+
     public function apply(Builder $query, array $data = []): Builder
     {
         if ($this->hasQueryModificationCallback()) {
@@ -50,11 +52,19 @@ class SelectFilter extends Filter
         return $this->options;
     }
 
+    public function searchable(bool $condition = true): static
+    {
+        $this->isSearchable = $condition;
+
+        return $this;
+    }
+
     public function getFormSchema(): array
     {
         return $this->formSchema ?? [
             Select::make('value')
                 ->label($this->getLabel())
+                ->searchable($this->isSearchable)
                 ->options($this->getOptions()),
         ];
     }
